@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>WebRTC 实例之视频通信:(一)服务器端代码,学习WebRTC,WebRTC教程,WebRTC参考手册 | 开发学院</title>
+        <link rel="stylesheet" href="http://www.kaifaxueyuan.com/assets/front/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://www.kaifaxueyuan.com/assets/front/css/my.css">
+<script src="http://www.kaifaxueyuan.com/assets/front/js/jquery.min.js"></script>
+<script src="http://www.kaifaxueyuan.com/assets/front/js/bootstrap.min.js"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?56d93008c21255b5674a0a916e29a69f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+        <meta name="keywords" content="WebRTC 实例之视频通信:(一)服务器端代码,WebRTC,WebRTC教程,WebRTC参考手册">
+        <meta name="description" content="WebRTC,WebRTC教程,WebRTC参考手册  WebRTC 视频Demo 在本节中，我们将构建一个客户端应用程序，允许两个用户在不同的设备上使用webrtc通信。我">
+        <link rel='canonical' href='http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-video-demo-server.html' />
+    </head>
+    <body  >
+        <div class="container" >
+    
+    <div><a href="http://www.kaifaxueyuan.com"><img src="http://www.kaifaxueyuan.com/assets/front/img/logo.png" alt="开发学院,分享开发教程和最新动态"></a>
+    </div>
+    <ul class="nav navbar-nav" >
+        <li  ><a href="/">首页</a></li>
+        <!--<li><a href="<?= site_url("news") ?>">新闻资讯</a></li>-->
+        <li><a href="http://www.kaifaxueyuan.com/basic.html">基础理论</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/frontend.html">前端技术</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/mobile.html">移动端</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/server.html">服务器端</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/database.html">数据库</a></li>
+        <!--<li><a href="http://www.kaifaxueyuan.com/gameengine.html">游戏引擎</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/tools.html">开发工具</a></li>
+        <li><a href="http://www.kaifaxueyuan.com/thers.html">其他教程</a></li>-->
+        <li class="hidden-xs hidden-sm">
+            <form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="输入关键词">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+
+        <div class="container" >
+            <ol class="breadcrumb">
+                <li>当前位置:</li>
+                <li><a href="http://www.kaifaxueyuan.com">首页</a></li>
+                <li><a href="http://www.kaifaxueyuan.com/frontend.html">前端技术</a></li>
+                <li><a href="http://www.kaifaxueyuan.com/frontend/webrtc.html">WebRTC 教程</a></li>
+                <li class="active">WebRTC 实例之视频通信:(一)服务器端代码详情</li>
+            </ol>  
+        </div>
+        <div class="container" >
+            <div class="row">
+                <div class="col-xs-3 col-md-3">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active">
+                            章节列表
+                        </a>
+                        <a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-index.html class = "list-group-item" title ="点击学习WebRTC 教程">WebRTC 教程</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-overview.html class = "list-group-item" title ="点击学习WebRTC 概述">WebRTC 概述</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-architecture.html class = "list-group-item" title ="点击学习WebRTC 体系结构">WebRTC 体系结构</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-environment.html class = "list-group-item" title ="点击学习WebRTC 开发环境">WebRTC 开发环境</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-protocols.html class = "list-group-item" title ="点击学习WebRTC 协议">WebRTC 协议</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-session-description-protocol.html class = "list-group-item" title ="点击学习​WebRTC 会话描述协议">​WebRTC 会话描述协议</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-finding-route.html class = "list-group-item" title ="点击学习​WebRTC 路由发现">​WebRTC 路由发现</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-sctp.html class = "list-group-item" title ="点击学习​WebRTC 流控传输协议">​WebRTC 流控传输协议</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-media-stream-apis.html class = "list-group-item" title ="点击学习WebRTC MediaStream接口">WebRTC MediaStream接口</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-rtcpeerconnection-apis.html class = "list-group-item" title ="点击学习WebRTC RTCPeerConnection接口">WebRTC RTCPeerConnection接口</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-rtcdatachannel-apis.html class = "list-group-item" title ="点击学习RTCDataChannel API接口">RTCDataChannel API接口</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-signaling.html class = "list-group-item" title ="点击学习WebRTC 信令服务器">WebRTC 信令服务器</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-sending-messages.html class = "list-group-item" title ="点击学习WebRTC 发送消息">WebRTC 发送消息</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-browser-support.html class = "list-group-item" title ="点击学习WebRTC 浏览器支持">WebRTC 浏览器支持</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-mobile-support.html class = "list-group-item" title ="点击学习WebRTC  移动端支持">WebRTC  移动端支持</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-video-demo-server.html class = "list-group-item" title ="点击学习WebRTC 实例之视频通信:(一)服务器端代码">WebRTC 实例之视频通信:(一)服务器端代码</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-video-demo-client.html class = "list-group-item" title ="点击学习WebRTC 实例之视频通信:(二)客户端代码">WebRTC 实例之视频通信:(二)客户端代码</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-voice-demo-server.html class = "list-group-item" title ="点击学习WebRTC 实例之语音演示(一):服务器端">WebRTC 实例之语音演示(一):服务器端</a><a href =http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-voice-demo-client.html class = "list-group-item" title ="点击学习WebRTC 实例之语音演示(二):客户端">WebRTC 实例之语音演示(二):客户端</a>
+                    </div>
+                </div>
+                <div class="col-xs-9 col-md-9">
+
+                    <div >
+                        <h2>   WebRTC 实例之视频通信:(一)服务器端代码</h2>
+                        <div style="max-height: 100px;">
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-9310280164906683"
+                                 data-ad-slot="8162982529"
+                                 data-ad-format="auto"></ins>
+                        </div>
+                        <div>
+                            <h1>WebRTC 视频Demo</h1><p>&nbsp; 在本节中，我们将构建一个客户端应用程序，允许两个用户在不同的设备上使用webrtc通信。我们的应用将有两页:一个用于登录,另一个用于通讯。</p><p style="text-align:center"><img src="/uppic/upload/image/2017/0725/1500977652940850.jpg" title="1500977652940850.jpg" _src="/uppic/upload/image/2017/0725/1500977652940850.jpg" alt="login_page.jpg"/></p><p>&nbsp; 这两个页面将包含在div标签中。大多数输入是通过简单事件处理程序完成的。</p><p style="text-align:center"><img src="/uppic/upload/image/2017/0725/1500977686437038.jpg" title="1500977686437038.jpg" _src="/uppic/upload/image/2017/0725/1500977686437038.jpg" alt="calling_page.jpg"/></p><h3>信令服务器</h3><p>&nbsp; 要创建webRTC连接客户端，必须能够传输消息而不使用webRTC对等连接。这是我们将使用html5 WebSockets-用于建立浏览器和服务器之间的双向套接字连接。现在让我们开始使用WebSockets创建server.js文件并插入以下代码:</p><p>&nbsp; //require our websocket library&nbsp;</p><p>var WebSocketServer = require(&#39;ws&#39;).Server;&nbsp;</p><p><br/></p><p>//creating a websocket server at port 9090&nbsp;</p><p>var wss = new WebSocketServer({port: 9090});</p><p>&nbsp;&nbsp;</p><p>//when a user connects to our sever&nbsp;</p><p>wss.on(&#39;connection&#39;, function(connection) {&nbsp;</p><p>&nbsp; &nbsp;console.log(&quot;user connected&quot;);&nbsp;</p><p></p><p>&nbsp; &nbsp;//when server gets a message from a connected user&nbsp;</p><p>&nbsp; &nbsp;connection.on(&#39;message&#39;, function(message) {&nbsp;</p><p>&nbsp; &nbsp; &nbsp; console.log(&quot;Got message from a user:&quot;, message);&nbsp;</p><p>&nbsp; &nbsp;});&nbsp;</p><p></p><p>&nbsp; &nbsp;connection.send(&quot;Hello from server&quot;);</p><p>});</p><p>&nbsp; 第一行中我们引用已经安装的websocket库,如果没有安装请先进行安装(npm install ws)。然后在端口号9090上创建一个socket服务器。接下来，我们监听连接事件。当用户对服务器建立websocket连接时，将执行connection方法。然后我们监听用户发送的消息。最后，我们向连接的用户发送响应“Hello from server”。</p><p>&nbsp; 在我们的信令服务器中，我们将为每个连接使用基于字符串的用户名，以便我们知道发送消息的信息。让我们更改我们的连接处理程序:connection.on(&#39;message&#39;,&nbsp;</p><pre class="brush:html;toolbar:false">function(message)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;data;&nbsp;
+&nbsp;&nbsp;&nbsp;//accepting&nbsp;only&nbsp;JSON&nbsp;messages&nbsp;
+&nbsp;&nbsp;&nbsp;try&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;JSON.parse(message);&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(e)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Invalid&nbsp;JSON&quot;);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;{};&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+});</pre><p>&nbsp; 我们只接受JSON消息。接下来，我们需要将连接的用户存储在某个地方。我们将使用一个简单的JavaScript对象来保存用户信息。更改server.js的顶部:</p><pre class="brush:html;toolbar:false">//require&nbsp;our&nbsp;websocket&nbsp;library&nbsp;
+var&nbsp;WebSocketServer&nbsp;=&nbsp;require(&#39;ws&#39;).Server;&nbsp;
+
+//creating&nbsp;a&nbsp;websocket&nbsp;server&nbsp;at&nbsp;port&nbsp;9090&nbsp;
+var&nbsp;wss&nbsp;=&nbsp;new&nbsp;WebSocketServer({port:&nbsp;9090});&nbsp;
+
+//all&nbsp;connected&nbsp;to&nbsp;the&nbsp;server&nbsp;users&nbsp;
+var&nbsp;users&nbsp;=&nbsp;{};//这里是新增加的变量</pre><p>&nbsp; 我们将为来自客户端的消息添加一个类型字段。例如，如果用户想要登录，他会发送login</p><p>类型消息。让我们定义它:</p><pre class="brush:html;toolbar:false">connection.on(&#39;message&#39;,&nbsp;function(message)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;data;&nbsp;
+&nbsp;&nbsp;&nbsp;//accepting&nbsp;only&nbsp;JSON&nbsp;messages&nbsp;
+&nbsp;&nbsp;&nbsp;try&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;JSON.parse(message);
+&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(e)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Invalid&nbsp;JSON&quot;);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;{};&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;//switching&nbsp;type&nbsp;of&nbsp;the&nbsp;user&nbsp;message&nbsp;
+&nbsp;&nbsp;&nbsp;switch&nbsp;(data.type)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//when&nbsp;a&nbsp;user&nbsp;tries&nbsp;to&nbsp;login&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;login&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;User&nbsp;logged:&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//if&nbsp;anyone&nbsp;is&nbsp;logged&nbsp;in&nbsp;with&nbsp;this&nbsp;username&nbsp;then&nbsp;refuse&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(users[data.name])&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;login&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:&nbsp;false&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//save&nbsp;user&nbsp;connection&nbsp;on&nbsp;the&nbsp;server&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users[data.name]&nbsp;=&nbsp;connection;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.name&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;login&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:&nbsp;true&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;error&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message:&nbsp;&quot;Command&nbsp;no&nbsp;found:&nbsp;&quot;&nbsp;+&nbsp;data.type&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;
+});</pre><p>&nbsp; 如果用户使用登录类型发送消息，则:</p><ul class=" list-paddingleft-2" style="list-style-type: disc;"><li><p>1.检查是否有人已使用此用户名登录</p></li><li><p>2.如果是，那么告诉用户他没有成功登录</p></li><li><p>3.如果没有人使用此用户名，我们将用户名作为连接对象的key。</p></li><li><p>4.如果命令不被识别，我们发送错误。</p></li></ul><p>&nbsp; 下面的代码是用于将消息发送到连接的helper函数。将它添加到server.js文件中:</p><pre class="brush:html;toolbar:false">function&nbsp;sendTo(connection,&nbsp;message)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;connection.send(JSON.stringify(message));&nbsp;
+}</pre><p>&nbsp; 当用户断开连接时，我们应该清理其连接。当关闭事件触发时，我们可以删除用户。将以下代码添加到连接处理程序:</p><pre class="brush:html;toolbar:false">connection.on(&quot;close&quot;,&nbsp;function()&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;if(connection.name)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete&nbsp;users[connection.name];&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+});</pre><p>&nbsp; 在成功登录后，用户希望跟其他用户建立链接的请求。他应该向另一个用户提供实现它的提议。添加提供处理程序:</p><pre class="brush:html;toolbar:false">case&nbsp;&quot;offer&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;//for&nbsp;ex.&nbsp;UserA&nbsp;wants&nbsp;to&nbsp;call&nbsp;UserB&nbsp;
+&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;offer&nbsp;to:&nbsp;&quot;,&nbsp;data.name);
+&nbsp;&nbsp;&nbsp;//if&nbsp;UserB&nbsp;exists&nbsp;then&nbsp;send&nbsp;him&nbsp;offer&nbsp;details&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//setting&nbsp;that&nbsp;UserA&nbsp;connected&nbsp;with&nbsp;UserB&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.otherName&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;offer&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offer:&nbsp;data.offer,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;connection.name&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;break;</pre><p>&nbsp; 首先，我们得到我们想要调用的用户的连接。如果存在，我们就派他提供细节。我们还向连接对象添加othername。这是为了便于后来找到它的简单性。</p><p>&nbsp; 对响应的回答有一个类似的模式，我们在提供处理程序中使用。我们的服务器只通过所有消息作为对另一个用户的应答。在提供处理程序后添加以下代码case &quot;answer&quot;:&nbsp;</p><pre class="brush:html;toolbar:false">&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;answer&nbsp;to:&nbsp;&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;//for&nbsp;ex.&nbsp;UserB&nbsp;answers&nbsp;UserA&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.otherName&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;answer&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;answer:&nbsp;data.answer&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;break;</pre><p>&nbsp; 最后一部分是在用户之间处理ice候选人。我们使用相同的技术在用户之间传递消息。主要区别是，候选消息可能按任何顺序为每个用户执行多次。添加候选处理程序.</p><pre class="brush:html;toolbar:false">case&nbsp;&quot;candidate&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;candidate&nbsp;to:&quot;,data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];
+&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;candidate&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;candidate:&nbsp;data.candidate&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;break;</pre><p>&nbsp; 要允许我们的用户断开与其他用户的连接，我们应该实现挂起函数。它还将告诉服务器删除所有用户引用。添加离开处理程序.</p><pre class="brush:html;toolbar:false">case&nbsp;&quot;leave&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;console.log(&quot;Disconnecting&nbsp;from&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;conn.otherName&nbsp;=&nbsp;null;&nbsp;
+&nbsp;&nbsp;&nbsp;//notify&nbsp;the&nbsp;other&nbsp;user&nbsp;so&nbsp;he&nbsp;can&nbsp;disconnect&nbsp;his&nbsp;peer&nbsp;connection&nbsp;
+&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;leave&quot;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;break;</pre><p>&nbsp; 还需要向其他用户发送离开事件，以便因此断开对等连接。我们还应该处理用户从信令服务器放弃连接时的情况。让我们修改我们的关闭处理程序.</p><pre class="brush:html;toolbar:false">connection.on(&quot;close&quot;,&nbsp;function()&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;if(connection.name)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete&nbsp;users[connection.name];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(connection.otherName)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Disconnecting&nbsp;from&nbsp;&quot;,&nbsp;connection.otherName);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[connection.otherName];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conn.otherName&nbsp;=&nbsp;null;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;leave&quot;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;}&nbsp;
+});</pre><p>&nbsp; 以下是我们的信令服务器的全部代码:</p><pre class="brush:html;toolbar:false">//require&nbsp;our&nbsp;websocket&nbsp;library&nbsp;
+var&nbsp;WebSocketServer&nbsp;=&nbsp;require(&#39;ws&#39;).Server;&nbsp;
+
+//creating&nbsp;a&nbsp;websocket&nbsp;server&nbsp;at&nbsp;port&nbsp;9090&nbsp;
+var&nbsp;wss&nbsp;=&nbsp;new&nbsp;WebSocketServer({port:&nbsp;9090});&nbsp;
+
+//all&nbsp;connected&nbsp;to&nbsp;the&nbsp;server&nbsp;users&nbsp;
+var&nbsp;users&nbsp;=&nbsp;{};
+&nbsp;&nbsp;
+//when&nbsp;a&nbsp;user&nbsp;connects&nbsp;to&nbsp;our&nbsp;sever&nbsp;
+wss.on(&#39;connection&#39;,&nbsp;function(connection)&nbsp;{
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;console.log(&quot;User&nbsp;connected&quot;);
+&nbsp;&nbsp;&nbsp;//when&nbsp;server&nbsp;gets&nbsp;a&nbsp;message&nbsp;from&nbsp;a&nbsp;connected&nbsp;user&nbsp;
+&nbsp;&nbsp;&nbsp;connection.on(&#39;message&#39;,&nbsp;function(message)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;data;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//accepting&nbsp;only&nbsp;JSON&nbsp;messages&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;JSON.parse(message);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;catch&nbsp;(e)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Invalid&nbsp;JSON&quot;);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;=&nbsp;{};&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//switching&nbsp;type&nbsp;of&nbsp;the&nbsp;user&nbsp;message&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(data.type)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//when&nbsp;a&nbsp;user&nbsp;tries&nbsp;to&nbsp;login
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;login&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;User&nbsp;logged&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//if&nbsp;anyone&nbsp;is&nbsp;logged&nbsp;in&nbsp;with&nbsp;this&nbsp;username&nbsp;then&nbsp;refuse&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(users[data.name])&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;login&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:&nbsp;false&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//save&nbsp;user&nbsp;connection&nbsp;on&nbsp;the&nbsp;server&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users[data.name]&nbsp;=&nbsp;connection;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.name&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;login&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;success:&nbsp;true&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;offer&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//for&nbsp;ex.&nbsp;UserA&nbsp;wants&nbsp;to&nbsp;call&nbsp;UserB&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;offer&nbsp;to:&nbsp;&quot;,&nbsp;data.name);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//if&nbsp;UserB&nbsp;exists&nbsp;then&nbsp;send&nbsp;him&nbsp;offer&nbsp;details&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//setting&nbsp;that&nbsp;UserA&nbsp;connected&nbsp;with&nbsp;UserB&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.otherName&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;offer&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;offer:&nbsp;data.offer,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name:&nbsp;connection.name&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;answer&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;answer&nbsp;to:&nbsp;&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//for&nbsp;ex.&nbsp;UserB&nbsp;answers&nbsp;UserA&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.otherName&nbsp;=&nbsp;data.name;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;answer&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;answer:&nbsp;data.answer&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;candidate&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Sending&nbsp;candidate&nbsp;to:&quot;,data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;candidate&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;candidate:&nbsp;data.candidate&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;&quot;leave&quot;:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Disconnecting&nbsp;from&quot;,&nbsp;data.name);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[data.name];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conn.otherName&nbsp;=&nbsp;null;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//notify&nbsp;the&nbsp;other&nbsp;user&nbsp;so&nbsp;he&nbsp;can&nbsp;disconnect&nbsp;his&nbsp;peer&nbsp;connection&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;leave&quot;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(connection,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;error&quot;,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message:&nbsp;&quot;Command&nbsp;not&nbsp;found:&nbsp;&quot;&nbsp;+&nbsp;data.type&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;//when&nbsp;user&nbsp;exits,&nbsp;for&nbsp;example&nbsp;closes&nbsp;a&nbsp;browser&nbsp;window&nbsp;
+&nbsp;&nbsp;&nbsp;//this&nbsp;may&nbsp;help&nbsp;if&nbsp;we&nbsp;are&nbsp;still&nbsp;in&nbsp;&quot;offer&quot;,&quot;answer&quot;&nbsp;or&nbsp;&quot;candidate&quot;&nbsp;state&nbsp;
+&nbsp;&nbsp;&nbsp;connection.on(&quot;close&quot;,&nbsp;function()&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(connection.name)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete&nbsp;users[connection.name];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(connection.otherName)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(&quot;Disconnecting&nbsp;from&nbsp;&quot;,&nbsp;connection.otherName);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;conn&nbsp;=&nbsp;users[connection.otherName];&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conn.otherName&nbsp;=&nbsp;null;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(conn&nbsp;!=&nbsp;null)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sendTo(conn,&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;&quot;leave&quot;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;connection.send(&quot;Hello&nbsp;world&quot;);&nbsp;&nbsp;
+});
+&nbsp;&nbsp;
+function&nbsp;sendTo(connection,&nbsp;message)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;connection.send(JSON.stringify(message));&nbsp;
+}</pre><p><br/></p>
+                            <br />
+                            
+                            <!-- 开发学院文章内页分享下方 -->
+                            <ins class="adsbygoogle"
+                                 style="display:block"
+                                 data-ad-client="ca-pub-9310280164906683"
+                                 data-ad-slot="9639715729"
+                                 data-ad-format="auto"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                            <br />
+                            <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+                            <script>window._bd_share_config = {"common": {"bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdPic": "", "bdStyle": "0", "bdSize": "16"}, "share": {}, "image": {"viewList": ["qzone", "tsina", "tqq", "renren", "weixin"], "viewText": "分享到：", "viewSize": "16"}, "selectShare": {"bdContainerClass": null, "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]}};
+                                with (document)
+                                    0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="link-left"><a href="http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-mobile-support.html" class="btn btn-default " title="点击进入上一节:WebRTC  移动端支持">上一节;WebRTC  移动端支持</a></div><div class="link-right"><a href="http://www.kaifaxueyuan.com/frontend/webrtc/webrtc-video-demo-client.html" class="btn btn-default " title="点击进入下一节:WebRTC 实例之视频通信:(二)客户端代码">下一节;WebRTC 实例之视频通信</a></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="container footer"  >
+    <hr />
+    <p style="">
+        <a href="/about.html">关于我们</a> |
+        <a href="/copyright.html">版权声明</a> | 
+        <a href="/disclaimer.html">免责声明</a>
+    </p>
+    <p style="">
+        Copyright © 2015-2017 开发学院  kaifaxueyuan.com All Rights Reserved. 备案号：黑ICP备16003807号-3
+    </p>
+</div>
+<div class="container"  style="text-align: center;" >
+   <script src="https://s13.cnzz.com/z_stat.php?id=1262463944&web_id=1262463944" language="JavaScript"></script>
+</div>
+
+
+        <script type="text/javascript" src="/assets/admin/js/commonutils.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+<script>
+    (function () {
+        var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?f1031df8fabdd6f905ba1aeba340a6cb" : "https://jspassport.ssl.qhimg.com/11.0.1.js?f1031df8fabdd6f905ba1aeba340a6cb";
+        document.write('<script src="' + src + '" id="sozz"><\/script>');
+    })();
+</script>
+
+
+        <script>
+            var seotitle = "webrtc-video-demo-server";
+            $(document).ready(function () {
+                $('.list-group-item').each(function (index) {
+                    // console.log($(this).attr("href"));
+                    var mytitle = getSeoTitle($(this).attr("href"));
+                    if (seotitle == mytitle) {
+                        $(this).addClass("mycurr")
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
